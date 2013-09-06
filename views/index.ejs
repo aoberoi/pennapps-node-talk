@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+  <title>PennApps YAYA</title>
+  <script src="http://static.opentok.com/webrtc/v2.0/js/TB.min.js" ></script>
+</head>
+<body>
+<script>
+  var session = TB.initSession('<%= sessionId %>');
+  session.addEventListener('sessionConnected', function(e) {
+    session.publish();
+    addStreams(e.streams);
+  });
+  session.addEventListener('streamCreated', function(e) {
+    addStreams(e.streams);
+  });
+  function addStreams(streams) {
+    streams.forEach(function(stream) {
+      if (stream.connection.connectionId !== session.connection.connectionId) {
+        session.subscribe(stream);
+      }
+    });
+  }
+  session.connect('854511', '<%= token %>');
+</script>
+</body>
+</html>
